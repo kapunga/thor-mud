@@ -1,0 +1,16 @@
+
+                   __      __   _                    _
+                   \ \    / /__| |__ ___ _ __  ___  | |_ ___
+                    \ \/\/ / -_) / _/ _ \ '  \/ -_) |  _/ _ \
+                     \_/\_/\___|_\__\___/_|_|_\___|  \__\___/
+
+       |''||''| '||                      '||    ||' '||'  '|' '||''|.
+          ||     || ..     ...   ... ..   |||  |||   ||    |   ||   ||
+          ||     ||' ||  .|  '|.  ||' ''  |'|..'||   ||    |   ||    ||
+          ||     ||  ||  ||   ||  ||      | '|' ||   ||    |   ||    ||
+         .||.   .||. ||.  '|..|' .||.    .|. | .||.   '|..'   .||...|'
+
+                       A brand new old-school adventure!
+
+WARNING! This is insecure at the moment.  Use fake emails and passwords
+         you don't really care about.  Type "quit" at any time to leave.

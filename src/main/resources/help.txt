@@ -1,0 +1,6 @@
+Available commands are:
+  help - Get this message.
+  look - See the room you are in.
+  quit - Leave this boring place.
+  say - Say something to anyone currently in the same room as you.
+        ex: say What's up doc?
