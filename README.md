@@ -14,10 +14,6 @@ Terminology
 This denotes an end user at his or her keyboard.
 ### Soul
 This is a player's meta character.  Each player creates only one soul.
-### Spirit
-This is a
-### Avatar
-This is a players
 
 License
 -------
