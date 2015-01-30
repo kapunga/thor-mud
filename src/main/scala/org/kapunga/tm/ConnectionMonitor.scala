@@ -52,13 +52,13 @@ class ConnectionMonitor extends Actor {
      * This message is sent by the parent when a command sequence is received by a player's telnet client.
      * Currently the only thing done upon receipt is to log the command.
      */
-    case Command(command) =>
+    case CommandSequence(command) =>
       log.info(s"Received control sequence: ${stringRepr(command)}")
   }
 
-  def preStop() = {
-    commandTimer.cancel()
-    responseTimer.cancel()
+  override def postStop() = {
+    if (commandTimer != null) commandTimer.cancel()
+    if (responseTimer != null) responseTimer.cancel()
   }
   
   private def startCommandTimer() = commandTimer = system.scheduler.scheduleOnce(COMMAND_TIMEOUT, self, Check)
@@ -173,4 +173,4 @@ case object Check
  * Sent by a ConnectionHandler when a command sequence is received.
  * @param command The command sequence received.
  */
-case class Command(command: ByteString)
+case class CommandSequence(command: ByteString)

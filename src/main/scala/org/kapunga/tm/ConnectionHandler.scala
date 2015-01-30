@@ -21,11 +21,8 @@ import org.kapunga.tm.soul.Soul
  *
  * @param connection An ActorRef to the Akka IO actor that handles the physical connection.
  */
-// TODO Investigate watching of the monitor as well and a kill all sort of message to stop ERROR log messages
-//      on an expected termination.
 // TODO Make LoggedIn only receivable once.
 // TODO Make sure LoggedIn can only be received from a child.
-// TODO When the connection terminates, also kill the monitor so it doesn't send dead letters.
 // TODO Intercept up and down arrows and implement command history.
 // TODO Intercept left and right arrays and implement insertion
 class ConnectionHandler(connection: ActorRef) extends Actor {
@@ -55,7 +52,7 @@ class ConnectionHandler(connection: ActorRef) extends Actor {
 
       if (isIAC(data)) {
         // If we receive a command, pass it on to the monitor.
-        monitor ! Command(data)
+        monitor ! CommandSequence(data)
       } else if (isNewline(data)) {
         // Echo a newline, flush the input buffer to the delegate, and turn off password mode.
         connection ! Write(ByteString("\r\n"))

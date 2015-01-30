@@ -1,0 +1,6 @@
+say
+---
+usage: say <sentence>
+example: say What's going on?
+
+Say something to everyone in the room.

@@ -1,0 +1,7 @@
+look
+----
+usage: look [target]
+example: look guard
+
+If a target is not specified, examine the room.  If a target is specified,
+examine that target.

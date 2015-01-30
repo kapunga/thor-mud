@@ -2,6 +2,7 @@ package org.kapunga.tm
 
 import akka.actor.{PoisonPill, Props, Actor}
 import akka.event.Logging
+import org.kapunga.tm.command.CommandExecutorService
 import org.kapunga.tm.soul.{SpiritAgent, Agent, Soul}
 
 /**
@@ -34,9 +35,8 @@ class SoulHandler(soul: Soul) extends Actor {
      * player's input or something like a reboot or a Kick
      */
     case Quit =>
-      agent.deSpawn()
-      parent ! Output("Bye Bye!\n")
-      self ! PoisonPill
+      parent ! CloseConnection("Bye Bye!\n")
+
     /*
      * This message is received when a player inputs a tab.  It should dispatch the tab to
      * the CommandExecuterService for completion.  Currently unimplemented.
