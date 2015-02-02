@@ -1,7 +1,9 @@
 package org.kapunga.tm.command
 
 /**
- * Created by kapunga on 1/29/15.
+ * This object is a CommandRegistry for control commands such as "quit" and "restart"
+ *
+ * @author Paul J Thordarson kapunga@gmail.com
  */
 object ControlCommands extends CommandRegistry {
   val quit = Command("quit", List("exit"), makeHelp("quit"), (context, subCommand) => context.executor.quit())

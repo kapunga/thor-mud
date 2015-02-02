@@ -1,7 +1,10 @@
 package org.kapunga.tm.command
 
 /**
- * Created by kapunga on 1/29/15.
+ * This object is CommandRegistry for communication commands such as
+ * "say", "tell", and "shout"
+ *
+ * @author Paul J Thordarson kapunga@gmail.com
  */
 object CommunicationCommands extends CommandRegistry {
   val say = Command("say", List(), makeHelp("say"), (context, subCommand) => {
