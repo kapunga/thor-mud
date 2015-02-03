@@ -1,6 +1,9 @@
 Available commands are:
-  help - Get this message.
-  look - See the room you are in.
-  quit - Leave this boring place.
-  say - Say something to anyone currently in the same room as you.
-        ex: say What's up doc?
+  help           - Get this message.
+  look           - See the room you are in.
+  quit (exit)    - Leave this boring place.
+  say            - Say something to anyone currently in the same room as you.
+                   ex: say What's up doc?
+  shout          - Say something to everyone in the game.
+  tell (whisper) - Tell something to a specific player.
+  who (list)     - Show all of the players currently logged in.

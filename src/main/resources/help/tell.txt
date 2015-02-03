@@ -1,0 +1,7 @@
+tell
+----
+Also: whisper
+usage: tell <player> <sentence>
+example: tell thor How are you today?
+
+Tell something to a specific player.

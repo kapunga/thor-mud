@@ -1,0 +1,6 @@
+shout
+-----
+usage: shout <sentence>
+example: shout What's going on?
+
+Say something to all players in the game.

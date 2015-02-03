@@ -99,7 +99,10 @@ object CommandExecutorService {
    * @param agent The agent to receive the help file.
    */
   def showHelp(agent: Agent): Unit = {
-    val lines = fromInputStream(getClass.getResourceAsStream("/help.txt")).getLines()
+    val helpFile = getClass.getResourceAsStream("/help.txt")
+    val lines = fromInputStream(helpFile).getLines().toList
+
+    helpFile.close()
 
     lines.foreach(line => agent.tell(line))
     agent.prompt()
@@ -140,9 +143,11 @@ trait CommandRegistry {
       if (resource == null) {
         List("Sorry, help is not available for that topic.")
       } else {
-        fromInputStream(resource).getLines()
+        fromInputStream(resource).getLines().toList
       }
     }
+
+    resource.close()
 
     (agent) => {
       lines.foreach(line => agent.tell(line))

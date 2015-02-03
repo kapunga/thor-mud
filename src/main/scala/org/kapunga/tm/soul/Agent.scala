@@ -52,7 +52,12 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
    * Spawn an agent to it's spawn point.  This only executes if the agent is
    * not already present in a room.
    */
-  def spawn() = if (location == null) soul.spawnPoint.spawn(this)
+  def spawn() = {
+    if (location == null) {
+      AgentManager.add(this)
+      soul.spawnPoint.spawn(this)
+    }
+  }
 
   /**
    * Remove the agent from the game world, generally on a logout.
@@ -60,6 +65,7 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
   def deSpawn() = {
     location.vacate(this)
     location = null
+    AgentManager.remove(this)
   }
 
   /**

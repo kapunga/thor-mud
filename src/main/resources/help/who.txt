@@ -1,0 +1,5 @@
+who
+----
+Also: list
+
+Show all of the players currently logged in to ThorMud.
