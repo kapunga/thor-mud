@@ -1,6 +1,7 @@
 package org.kapunga.tm.command
 
 import org.kapunga.tm.soul.AgentManager
+import CommandHelpers._
 
 /**
  * This object is a CommandRegistry for control commands such as "quit" and "restart"

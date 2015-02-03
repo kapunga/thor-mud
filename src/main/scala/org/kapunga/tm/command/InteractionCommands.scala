@@ -1,5 +1,7 @@
 package org.kapunga.tm.command
 
+import CommandHelpers._
+
 /**
  * A command registry for commands that provide basic world interaction, such as
  * "look" or "take".

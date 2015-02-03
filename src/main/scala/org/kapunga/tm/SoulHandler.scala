@@ -42,8 +42,14 @@ class SoulHandler(soul: Soul) extends Actor {
      * the CommandExecuterService for completion.  Currently unimplemented.
      */
     case TabComplete(partialCommand) =>
-      parent ! Output("\nTab completion not implemented at this time.")
-      prompt()
+      CommandExecutorService.tabComplete(partialCommand, agent.context) match {
+        case EmptyTabComplete =>
+          parent ! Output("\n")
+          prompt()
+        case TabCompleteResult(output, options) =>
+          parent ! TabCompleteResult(output, options)
+      }
+
     /*
      * This message is received when an in-game event happens and the player needs to be notified.
      * This can generally come from just about anywhere.

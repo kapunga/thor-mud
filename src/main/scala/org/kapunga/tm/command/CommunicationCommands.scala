@@ -1,6 +1,7 @@
 package org.kapunga.tm.command
 
 import org.kapunga.tm.soul.AgentManager
+import CommandHelpers._
 
 /**
  * This object is CommandRegistry for communication commands such as
@@ -12,13 +13,18 @@ object CommunicationCommands extends CommandRegistry {
   val say = Command("say", List(), makeHelp("say"), (context, subCommand) => {
     import context.executor
 
-    context.room.agents.filter(a => a != executor).foreach(a => {
-      a.tell(s"${context.executor.name} said, '${subCommand.trim}'")
-      a.prompt()
-    })
+    if (subCommand.trim == "") {
+      executor.tell("What do you want to say?")
+      executor.prompt()
+    } else {
+      context.room.agents.filter(a => a != executor).foreach(a => {
+        a.tell(s"${context.executor.name} says, '${subCommand.trim}'")
+        a.prompt()
+      })
 
-    executor.tell(s"You said, '$subCommand'")
-    executor.prompt()
+      executor.tell(s"You say, '$subCommand'")
+      executor.prompt()
+    }
   })
 
   val shout = Command("shout", List(), makeHelp("shout"), (context, subCommand) => {
@@ -68,11 +74,9 @@ object CommunicationCommands extends CommandRegistry {
             executor.tell(s"A player by that name is not available.")
             executor.prompt()
         }
-
-
       }
     }
-  })
+  }, completeSubCommand(() => AgentManager.getAgents.map(agent => agent.name)))
 
   var commandList: List[Command] = List(say, shout, tell)
 

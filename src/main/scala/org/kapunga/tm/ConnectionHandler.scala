@@ -94,6 +94,27 @@ class ConnectionHandler(connection: ActorRef) extends Actor {
     case SendCommand(command) =>
       connection ! Write(command)
 
+    case TabCompleteResult(output, options) =>
+      inputBuffer = inputBuffer + output
+
+      if (options.size > 0) {
+        val podSize = findPod(options.fold("")((a, b) => if (a.length > b.length) a else b).size + 1, 80)
+        var count = 0
+
+        for (command: String <- options.sorted) {
+          if (count == 0) self ! Output("\n")
+
+          self ! Output(command.padTo(podSize, ' '))
+          count = count + 1
+
+          if (count == 80 / podSize) count = 0
+        }
+
+        delegate ! Prompt
+      } else {
+        self ! Output(output)
+      }
+
     /*
      * Sends the player some output as a prompt, so it is not terminated by a newline.  The output
      * content is appended with the current input buffer.  This is helpful because as a player is
@@ -157,6 +178,16 @@ class ConnectionHandler(connection: ActorRef) extends Actor {
     case PeerClosed =>
       log.info("Connection closed by client.")
       stop(self)
+  }
+
+  def findPod(start: Int, max: Int): Int = {
+    if (max <= start) {
+      start
+    } else if (max % start == 0) {
+      start
+    } else {
+      findPod(start + 1, max)
+    }
   }
 
   // Returns true if a ByteString starts with an IAC character.
@@ -234,6 +265,11 @@ case class TabComplete(input: String)
  * @param options A list of potential matches for whatever has been typed by the player thus far.
  */
 case class TabCompleteResult(output: String, options: List[String])
+
+/**
+ * An empty TabCompleteResult
+ */
+object EmptyTabComplete extends TabCompleteResult("", List())
 
 /**
  * This message is sent when some part of the system, most likely a ConnectionMonitor needs to send

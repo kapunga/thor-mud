@@ -1,11 +1,13 @@
 package org.kapunga.tm.command
 
 import akka.actor.{ActorRef, Actor}
-import org.kapunga.tm.TabCompleteResult
+import org.kapunga.tm.{EmptyTabComplete, TabCompleteResult}
 import org.kapunga.tm.soul.Agent
 import org.kapunga.tm.world.Room
 
 import scala.io.Source._
+
+import CommandHelpers._
 
 /**
  * This object maintains a collection of all available commands as well as a pool of actors responsible
@@ -36,7 +38,7 @@ object CommandExecutorService {
         agent.tell("There is no help available for that topic.")
         agent.prompt()
       }
-    })
+    }, completeSubCommand(() => commandMap.keys))
 
   registerCommand(help)
 
@@ -65,22 +67,36 @@ object CommandExecutorService {
    * @param context The command context associated with this command request.
    */
   def command(rawCommand: String, context: CommandContext) = {
-    val command = rawCommand.split(" ")(0)
-    val subCommand = {
-      if (command.length == rawCommand.length) {
-        ""
-      } else {
-        rawCommand.substring(command.length).trim
-      }
-    }
+    val commandPair = splitCommand(rawCommand)
 
-    if (command == "") {
+    if (commandPair.command == "") {
       context.executor.prompt()
-    } else if (commandMap.contains(command)) {
-      executorPool ! ExecutionRequest(commandMap(command), context, subCommand)
+    } else if (commandMap.contains(commandPair.command)) {
+      executorPool ! ExecutionRequest(commandMap(commandPair.command), context, commandPair.subCommand.trim())
     } else {
-      context.executor.tell(s"$command is not an availableCommand.\n")
+      context.executor.tell(s"${commandPair.command} is not an availableCommand.\n")
       showHelp(context.executor)
+    }
+  }
+
+  /**
+   * This method handles tab completion of partial commands.
+   *
+   * @param partialCommand The partial command we wish to complete.
+   * @param context The command context for the partial command.
+   * @return The TabCompleteResult for a tab completion request.
+   */
+  def tabComplete(partialCommand: String, context: CommandContext): TabCompleteResult = {
+    val commandPair = splitCommand(partialCommand)
+
+    if(commandPair.hasSubCommand || partialCommand.endsWith(" ")) {
+      if (commandMap.contains(commandPair.command)) {
+        commandMap(commandPair.command).tabComplete(context, commandPair.subCommand)
+      } else {
+        EmptyTabComplete
+      }
+    } else {
+      doComplete(partialCommand, commandMap.keys)
     }
   }
 
@@ -110,6 +126,15 @@ object CommandExecutorService {
 }
 
 /**
+ * A case class representing a command input split up into a command and a subCommand.
+ * @param command The command part of the pair.
+ * @param subCommand The subCommand part of the pair.
+ */
+case class CommandPair(command: String, subCommand: String) {
+  def hasSubCommand: Boolean = subCommand != null && subCommand != ""
+}
+
+/**
  * A simple actor to execute a command.  It is initialized in pools and runs commands so that each agent's input and
  * output is not blocked in the event that a command takes a while or hangs.  It should only receive ExecutionRequest
  * messages.
@@ -128,33 +153,6 @@ class CommandExecutor extends Actor {
  * whatever passes it a register argument, generally the CommandExecutorService.
  */
 trait CommandRegistry {
-  /**
-   * Create a function that outputs the help file for a command to an Agent.
-   *
-   * @param command The command who's help file we need to look up.
-   * @return A function that takes an agent as an argument and when called prints out a help file to it.
-   *         In the event that a help file is unavailable, it will inform the agent that help is not available
-   *         for that specific topic.
-   */
-  def makeHelp(command: String): Agent => Unit = {
-    val resource = getClass.getResourceAsStream(s"/help/$command.txt")
-
-    val lines = {
-      if (resource == null) {
-        List("Sorry, help is not available for that topic.")
-      } else {
-        fromInputStream(resource).getLines().toList
-      }
-    }
-
-    resource.close()
-
-    (agent) => {
-      lines.foreach(line => agent.tell(line))
-      agent.prompt()
-    }
-  }
-
   /**
    * Take a closure as an argument that registers each command in this registry with some outside entity.
    *
@@ -186,7 +184,8 @@ case class CommandContext(executor: Agent, room: Room)
  *                    return an empty TabCompleteResult.
  */
 case class Command(name: String, aliases: List[String], help: Agent => Unit, exec: (CommandContext, String) => Unit,
-                   tabComplete: CommandContext => TabCompleteResult = (context) => TabCompleteResult("", List()))
+                   tabComplete: (CommandContext, String) => TabCompleteResult =
+                   (context, subCommand) => TabCompleteResult("", List()))
 
 /**
  * An encapsulation of a valid command input from a player.  This is used as a message to be passed off to
@@ -197,3 +196,104 @@ case class Command(name: String, aliases: List[String], help: Agent => Unit, exe
  * @param subCommand The subCommand that goes along with this command.
  */
 case class ExecutionRequest(command: Command, context: CommandContext, subCommand: String)
+
+/**
+ * This object is a holder for a bunch of convenience methods used in the creation of commands.
+ */
+object CommandHelpers {
+  /**
+   * Create a function that outputs the help file for a command to an Agent.
+   *
+   * @param command The command who's help file we need to look up.
+   * @return A function that takes an agent as an argument and when called prints out a help file to it.
+   *         In the event that a help file is unavailable, it will inform the agent that help is not available
+   *         for that specific topic.
+   */
+  def makeHelp(command: String): Agent => Unit = {
+    val resource = getClass.getResourceAsStream(s"/help/$command.txt")
+
+    val lines = {
+      if (resource == null) {
+        List("Sorry, help is not available for that topic.")
+      } else {
+        fromInputStream(resource).getLines().toList
+      }
+    }
+
+    resource.close()
+
+    (agent) => {
+      lines.foreach(line => agent.tell(line))
+      agent.prompt()
+    }
+  }
+
+  /**
+   * Split a command string into a command and a subCommand.
+   *
+   * @param commandString The input command string
+   * @return The command pair created by splitting the commandString.  Command and subCommand components
+   *         default to an empty string.
+   */
+  def splitCommand(commandString: String): CommandPair = {
+    val command = if (commandString.split(" ").length > 0) commandString.split(" ")(0) else ""
+    val subCommand = {
+      if (command.length == commandString.length) {
+        ""
+      } else {
+        commandString.substring(command.length + 1)
+      }
+    }
+
+    CommandPair(command, subCommand)
+  }
+
+  /**
+   * Performs tab completion on a generic subCommand.
+   *
+   * @param possible A generator function for an iterable of possible commands.
+   * @param context The command context for a tab completion request.
+   * @param subCommand A subCommand of a tab completion request.
+   * @return The TabCompleteResult for this tab completion request.
+   */
+  def completeSubCommand(possible: () => Iterable[String])(context: CommandContext, subCommand: String): TabCompleteResult = {
+    val commandPair = splitCommand(subCommand)
+
+    if(commandPair.hasSubCommand || subCommand.endsWith(" ")) {
+      EmptyTabComplete
+    } else {
+      doComplete(commandPair.command, possible())
+    }
+  }
+
+  /**
+   * Perform the matching for a tab completion.  Takes a fragment of a command that is trying to be matched
+   * and a list of acceptable targets to match against.
+   *
+   * @param commFrag The fragment of a command we are matching.
+   * @param possible The list of possible choices we need to match the fragment against.
+   * @return A TabCompleteResult for this particular command fragment.
+   */
+  def doComplete(commFrag: String, possible: Iterable[String]): TabCompleteResult = {
+    val possibleCommands = possible.filter(command => command.indexOf(commFrag) == 0)
+
+    possibleCommands.size match {
+      case 0 =>
+        EmptyTabComplete
+      case 1 =>
+        TabCompleteResult(possibleCommands.toList(0).substring(commFrag.size) + " ", List())
+      case _ =>
+        val first: String = possibleCommands.toList(0)
+
+        var subSeq = commFrag
+
+        for (i <- 0 until first.size) {
+          if (possibleCommands.forall(c => c.indexOf(first.substring(0, i)) == 0)) {
+            subSeq = first.substring(0, i)
+          }
+        }
+
+        TabCompleteResult(subSeq.substring(commFrag.size), possibleCommands.toList)
+    }
+  }
+}
