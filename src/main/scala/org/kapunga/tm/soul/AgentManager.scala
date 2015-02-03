@@ -15,7 +15,7 @@ object AgentManager {
    * @param agent The agent we are adding.
    * @return true if the agent wasn't present and is added otherwise false.
    */
-  protected def add(agent: Agent): Boolean = {
+  def add(agent: Agent): Boolean = {
     if (agents.contains(agent)) {
       false
     } else {
@@ -31,7 +31,7 @@ object AgentManager {
    * @param agent The agent we are removing.
    * @return true if the agent is present and removed, otherwise false.
    */
-  protected def remove(agent: Agent): Boolean = {
+  def remove(agent: Agent): Boolean = {
     if (agents.contains(agent)) {
       agents = agents - agent
       true
