@@ -53,7 +53,7 @@ class ConnectionMonitor extends Actor {
      * Currently the only thing done upon receipt is to log the command.
      */
     case CommandSequence(command) =>
-      log.info(s"Received control sequence: ${stringRepr(command)}")
+      log.debug(s"Received control sequence: ${stringRepr(command)}")
   }
 
   override def postStop() = {
@@ -66,7 +66,7 @@ class ConnectionMonitor extends Actor {
   private def startResponseTimer() = responseTimer = system.scheduler.scheduleOnce(RESPONSE_TIMEOUT, self, PeerClosed)
 
   private def sendCommand(command: ByteString) = {
-    log.info(s"Sending control sequence: ${stringRepr(command)}")
+    log.debug(s"Sending control sequence: ${stringRepr(command)}")
     parent ! SendCommand(command)
   }
 }

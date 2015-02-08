@@ -10,7 +10,7 @@ import CommandHelpers._
  * @author Paul J Thordarson kapunga@gmail.com
  */
 object CommunicationCommands extends CommandRegistry {
-  val say = Command("say", List(), makeHelp("say"), (context, subCommand) => {
+  val say = Command("say", Nil, makeHelp("say"), (context, subCommand) => {
     import context.executor
 
     if (subCommand.trim == "") {
@@ -27,7 +27,7 @@ object CommunicationCommands extends CommandRegistry {
     }
   })
 
-  val shout = Command("shout", List(), makeHelp("shout"), (context, subCommand) => {
+  val shout = Command("shout", Nil, makeHelp("shout"), (context, subCommand) => {
     import context.executor
 
     if (subCommand.trim == "") {

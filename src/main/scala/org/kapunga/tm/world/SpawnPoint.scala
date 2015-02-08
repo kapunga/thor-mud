@@ -11,6 +11,7 @@ import org.kapunga.tm.soul.Agent
  */
 class SpawnPoint(spawnPoint: Room) {
   def spawn(spirit: Agent) = spawnPoint.enter(spirit)
+  def room = spawnPoint
 }
 
 /**
@@ -19,5 +20,5 @@ class SpawnPoint(spawnPoint: Room) {
  * change more to a DAO as spawn points get more dynamic.
  */
 object SpawnPoint {
-  def globalSpawn = new SpawnPoint(TheVoid)
+  var globalSpawn = new SpawnPoint(TheVoid)
 }

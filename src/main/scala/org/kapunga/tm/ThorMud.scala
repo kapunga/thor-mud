@@ -3,6 +3,7 @@ package org.kapunga.tm
 import akka.actor.{Props, ActorSystem}
 import akka.routing.{RoundRobinPool, DefaultResizer}
 import org.kapunga.tm.command.{CommandExecutorService, CommandExecutor}
+import org.kapunga.tm.world.Universe
 import org.slf4j.LoggerFactory
 
 /**
@@ -26,6 +27,10 @@ class ThorMud {
       log.error("Unable to start CommandExecutorService, shutting down.")
       system.shutdown()
     }
+
+    log.info("Initializing universe...")
+    Universe.init()
+    log.info("Universe initialized.")
 
     // Start up the TCP server
     if (!system.isTerminated) system.actorOf(TcpServer.serverProps(12345), ThorMud.TCP_ACTOR_NAME)

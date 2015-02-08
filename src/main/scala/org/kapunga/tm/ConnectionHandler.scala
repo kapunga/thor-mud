@@ -33,6 +33,8 @@ class ConnectionHandler(connection: ActorRef) extends Actor {
 
   connection ! Register(self)
 
+  watch(connection)
+
   var monitor = actorOf(Props[ConnectionMonitor], "monitor")
   var delegate = actorOf(Props[LoginHandler], "login")
 
@@ -269,7 +271,7 @@ case class TabCompleteResult(output: String, options: List[String])
 /**
  * An empty TabCompleteResult
  */
-object EmptyTabComplete extends TabCompleteResult("", List())
+object EmptyTabComplete extends TabCompleteResult("", Nil)
 
 /**
  * This message is sent when some part of the system, most likely a ConnectionMonitor needs to send

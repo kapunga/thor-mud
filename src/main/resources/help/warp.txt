@@ -1,0 +1,6 @@
+warp
+----
+usage: warp ( zone | pantheon | player ) <location name>
+example: warp zone The Void
+
+Warp to a specific zone or pantheon.

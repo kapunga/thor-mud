@@ -9,9 +9,9 @@ import CommandHelpers._
  * @author Paul J Thordarson kapunga@gmail.com
  */
 object ControlCommands extends CommandRegistry {
-  val quit = Command("quit", List("exit"), makeHelp("quit"), (context, subCommand) => context.executor.quit())
+  val quit = Command("quit", "exit" :: Nil, makeHelp("quit"), (context, subCommand) => context.executor.quit())
 
-  val who = Command("who", List("list"), makeHelp("who"), (context, subCommand) => {
+  val who = Command("who", "list" :: Nil, makeHelp("who"), (context, subCommand) => {
     context.executor.tell("Players\n=-=-=-=")
     val agents = AgentManager.getAgents
     agents.foreach(agent => context.executor.tell(s"${agent.name}"))
@@ -19,7 +19,7 @@ object ControlCommands extends CommandRegistry {
     context.executor.prompt()
   })
 
-  var commandList: List[Command] = List(quit, who)
+  var commandList = quit :: who :: Nil
 
   override def registerCommands(register: Command => Unit) = commandList.foreach(x => register(x))
 }

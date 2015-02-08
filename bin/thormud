@@ -1,0 +1,48 @@
+#!/bin/sh
+
+THORMUD_HOME=~/ThorMud
+LOG_HOME=$THORMUD_HOME/log
+PID_FILE=$THORMUD_HOME/bin/pid.out
+
+do_exec()
+{
+  eval "(java -jar $THORMUD_HOME/lib/ThorMud.jar > $LOG_HOME/thor-mud.log) &"
+  pid=$!
+
+  echo $pid > $PID_FILE
+}
+
+do_kill()
+{
+  kill -HUP $(<"$PID_FILE")
+  rm $PID_FILE
+}
+
+case "$1" in
+    start)
+        if [ -f "$PID_FILE" ]; then
+            echo "The mud is already running"
+            exit 1
+        else
+	    do_exec
+	fi
+            ;;
+    stop)
+        if [ -f "$PID_FILE" ]; then
+            do_kill
+        fi
+            ;;
+    restart)
+        if [ -f "$PID_FILE" ]; then
+            do_kill
+            do_exec
+        else
+            echo "The mud is not running, will do nothing"
+            exit 1
+        fi
+            ;;
+    *)
+            echo "usage: mud {start|stop|restart}" >&2
+            exit 3
+            ;;
+esac

@@ -1,0 +1,3 @@
+pantheons
+---------
+List all of the pantheons available in ThorMUD.

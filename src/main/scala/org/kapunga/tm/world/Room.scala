@@ -15,19 +15,26 @@ import org.kapunga.tm.soul.Agent
  * @param description The description of this room.
  * @param zone The zone to which this room is a member.
  */
-class Room(title: String, description: String, zone: Zone) {
+class Room(tmId: Int, title: String, description: String, zone: Zone) extends Persistent {
+  var directions: Map[String, Room] = Map()
   var agents: Set[Agent] = Set()
 
   zone.registerRoom(this)
+
+  def id = tmId
+
+  def getTitle: String = title
+
+  def setDirection(dir: String, room: Room) = directions = directions + (dir -> room)
 
   /**
    * Place a given agent into this room.
    *
    * @param agent The agent entering the room.
    */
-  def enter(agent: Agent) = {
+  def enter(agent: Agent, message: String = "has arrived.") = {
     agents foreach (a => {
-      a tell s"${agent.name} has arrived."
+      a tell s"${agent.name} $message"
       a.prompt()
     })
 
@@ -41,11 +48,11 @@ class Room(title: String, description: String, zone: Zone) {
    *
    * @param agent The agent leaving.
    */
-  def vacate(agent: Agent) = {
+  def vacate(agent: Agent, message: String = "has left.") = {
     if (agents.contains(agent)) {
       agents = agents - agent
       agents foreach (a => {
-        a tell s"${agent.name} has left."
+        a tell s"${agent.name} $message"
         a.prompt()
       })
     }
@@ -57,9 +64,24 @@ class Room(title: String, description: String, zone: Zone) {
    * @param agent The agent to tell.
    */
   def look(agent: Agent) = {
-    agent tell s"\n$title\n\n$description\n"
+    agent tell s"\n$getTitle\n\n$description\n\n$getExitsString\n"
     whoIsHere(agent)
     agent.prompt()
+  }
+
+  def move(agent: Agent, direction: String) = {
+    if (directions.contains(direction) && agents.contains(agent)) {
+      agents = agents - agent
+      agents foreach (a => {
+        a tell s"${agent.name} leaves $direction."
+        a.prompt()
+      })
+      agent.tell(s"You leave $direction.")
+      directions(direction).enter(agent)
+    } else {
+      agent.tell("You can't leave in that direction.")
+      agent.prompt()
+    }
   }
 
   /**
@@ -68,12 +90,26 @@ class Room(title: String, description: String, zone: Zone) {
    * @param agent The agent to tell who is in the room.
    */
   def whoIsHere(agent: Agent) = agents.filter(a => a != agent) foreach (a => agent tell s"${a.name} is here.")
+
+  def getExitsString: String = {
+    val exits = {
+      if (directions.keySet.size == 0) {
+        "none"
+      } else {
+        directions.keySet.mkString(" ")
+      }
+    }
+
+    s"Exits: [ $exits ]"
+  }
 }
 
 /**
  * This is a bottom level singleton room.  It should be used sort of an a null for rooms.
  */
 // TODO Give the void a database handle.
-object TheVoid extends Room("The Void", "You are surrounded by an inky black nothingness.", TheNether)
+object TheVoid extends Room(-1, "The Void", "You are surrounded by an inky black nothingness.", TheNether)
+
+case class Link(orig: Int, dest: Int, direction: String)
 
 

@@ -16,6 +16,7 @@ import CommandHelpers._
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
+// TODO Make help just list topics available for help.
 object CommandExecutorService {
   var commandMap = Map[String, Command]()
   var executorPool: ActorRef = null
@@ -23,11 +24,12 @@ object CommandExecutorService {
   ControlCommands.registerCommands(registerCommand)
   CommunicationCommands.registerCommands(registerCommand)
   InteractionCommands.registerCommands(registerCommand)
+  DirectionCommands.registerCommands(registerCommand)
 
   /**
    * The help command is defined here as it relies on having access to the complete command map.
    */
-  val help = Command("help", List(), showHelp, (context, subCommand) => {
+  val help = Command("help", Nil, showHelp, (context, subCommand) => {
       val agent = context.executor
 
       if (subCommand == null || subCommand == "") {
@@ -185,7 +187,7 @@ case class CommandContext(executor: Agent, room: Room)
  */
 case class Command(name: String, aliases: List[String], help: Agent => Unit, exec: (CommandContext, String) => Unit,
                    tabComplete: (CommandContext, String) => TabCompleteResult =
-                   (context, subCommand) => TabCompleteResult("", List()))
+                   (context, subCommand) => TabCompleteResult("", Nil))
 
 /**
  * An encapsulation of a valid command input from a player.  This is used as a message to be passed off to
@@ -281,19 +283,23 @@ object CommandHelpers {
       case 0 =>
         EmptyTabComplete
       case 1 =>
-        TabCompleteResult(possibleCommands.toList(0).substring(commFrag.size) + " ", List())
+        TabCompleteResult(possibleCommands.toList(0).substring(commFrag.size) + " ", Nil)
       case _ =>
-        val first: String = possibleCommands.toList(0)
+        if (possible.exists(p => p == commFrag)) {
+          TabCompleteResult("", possibleCommands.toList)
+        } else {
+          val first: String = possibleCommands.toList(0)
 
-        var subSeq = commFrag
+          var subSeq = commFrag
 
-        for (i <- 0 until first.size) {
-          if (possibleCommands.forall(c => c.indexOf(first.substring(0, i)) == 0)) {
-            subSeq = first.substring(0, i)
+          for (i <- 0 until first.size) {
+            if (possibleCommands.forall(c => c.indexOf(first.substring(0, i)) == 0)) {
+              subSeq = first.substring(0, i)
+            }
           }
-        }
 
-        TabCompleteResult(subSeq.substring(commFrag.size), possibleCommands.toList)
+          TabCompleteResult(subSeq.substring(commFrag.size), possibleCommands.toList)
+        }
     }
   }
 }
