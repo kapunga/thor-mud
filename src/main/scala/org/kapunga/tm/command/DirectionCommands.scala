@@ -8,9 +8,6 @@ import org.kapunga.tm.world.{Universe, WorldDAO}
 /**
  * @author Paul J Thordarson kapunga@gmail.com
  */
-// TODO: Implement room number warping.
-// TODO: Implement pantheon warping.
-// TODO: Implement player warping.
 object DirectionCommands extends CommandRegistry {
   val WARP_PANTHEON = "pantheon"
   val WARP_PLAYER = "player"

@@ -107,7 +107,6 @@ class Room(tmId: Int, title: String, description: String, zone: Zone) extends Pe
 /**
  * This is a bottom level singleton room.  It should be used sort of an a null for rooms.
  */
-// TODO Give the void a database handle.
 object TheVoid extends Room(-1, "The Void", "You are surrounded by an inky black nothingness.", TheNether)
 
 case class Link(orig: Int, dest: Int, direction: String)

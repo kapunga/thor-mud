@@ -9,7 +9,6 @@ import org.kapunga.tm.world.Universe
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-// TODO Allow look to take arguments.
 object InteractionCommands extends CommandRegistry {
   val look = Command("look", Nil, makeHelp("look"), (context, subCommand) => context.room.look(context.executor))
 

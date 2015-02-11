@@ -23,8 +23,6 @@ import org.kapunga.tm.soul.Soul
  */
 // TODO Make LoggedIn only receivable once.
 // TODO Make sure LoggedIn can only be received from a child.
-// TODO Intercept up and down arrows and implement command history.
-// TODO Intercept left and right arrays and implement insertion
 class ConnectionHandler(connection: ActorRef) extends Actor {
   import context._
   import ConnectionHandler._

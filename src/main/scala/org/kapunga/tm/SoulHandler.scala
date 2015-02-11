@@ -12,8 +12,6 @@ import org.kapunga.tm.soul.{SpiritAgent, Agent, Soul}
  * @param soul The soul of the logged in player.
  */
 // TODO Support dynamic prompts definable by the player.
-// TODO Support per-soul command logging.
-// TODO Support tab completion.
 // TODO Support quit messages so a user can be notified of why they may have been forced to quit.
 class SoulHandler(soul: Soul) extends Actor {
   import context.parent

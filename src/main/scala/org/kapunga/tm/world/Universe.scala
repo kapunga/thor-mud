@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory
  * @author Paul J Thordarson kapunga@gmail.com
  */
 // TODO: Make zone loading smarter.
-// TODO: Make indexes so we don't have to iterate.
 object Universe {
   private val log = LoggerFactory.getLogger("Universe")
   private var pantheons: Map[Int, Pantheon] = Map()

@@ -16,7 +16,6 @@ import scala.concurrent.duration._
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-// TODO Create expected responses to commands to confirm that the remote client is in a correct state.
 class ConnectionMonitor extends Actor {
   import ConnectionMonitor._
   import context._

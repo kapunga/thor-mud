@@ -17,10 +17,8 @@ import java.net.InetSocketAddress
  * @author Paul J Thordarson
  */
 // TODO Figure out how to do secure connections over telnet.
-// TODO Add limitations to the number of simultaneous connections.
 // TODO Add a whitelist or blacklist to external ips.
 // TODO Move log messages to a message bundle or something.
-// TODO If this receives a CommandFailed message, we need to shut down the whole system.
 class TcpServer(port: Int) extends Actor {
   import TcpServer._
   import context.system
