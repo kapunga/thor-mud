@@ -11,7 +11,7 @@ import CommandHelpers._
 object ControlCommands extends CommandRegistry {
   val quit = Command("quit", "exit" :: Nil, makeHelp("quit"), (context, subCommand) => context.executor.quit())
 
-  val who = Command("who", "list" :: Nil, makeHelp("who"), (context, subCommand) => {
+  val who = Command("who", "list" :: "players" :: Nil, makeHelp("who"), (context, subCommand) => {
     context.executor.tell("Players\n=-=-=-=")
     val agents = AgentManager.getAgents
     agents.foreach(agent => context.executor.tell(s"${agent.name}"))
