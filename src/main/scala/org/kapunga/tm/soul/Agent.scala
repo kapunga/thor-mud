@@ -12,7 +12,6 @@ import org.kapunga.tm.world.Room
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-// TODO Properly implement this class, it's a bit of a hack at the moment.
 // TODO Make tells and prompt atomic.
 abstract class Agent(soul: Soul, agentActor: ActorRef) {
   var location: Room = null

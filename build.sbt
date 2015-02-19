@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.4", // Akka actors and IO
   "org.mindrot" % "jbcrypt" % "0.3m",            // Encryption library for hashing passwords
   "org.anormcypher" %% "anormcypher" % "0.6.0",   // Library to connect to neo4j
-  "ch.qos.logback" % "logback-classic" % "1.1.2"
+  "ch.qos.logback" % "logback-classic" % "1.1.2",
+  "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 )
 

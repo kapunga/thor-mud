@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory
 // TODO: Make zone loading smarter.
 object Universe {
   private val log = LoggerFactory.getLogger("Universe")
-  private var pantheons: Map[Int, Pantheon] = Map()
+  private var pantheons: Map[Int, Pantheon] = Map(Universal.id -> Universal)
   private var zones: Map[Int, Zone] = Map(TheNether.id -> TheNether)
   
   def init() = {
     log.info("Loading pantheons.")
-    WorldDAO.findAllPantheons().foreach(p => {
+    WorldDAO.findAllPantheons().filter(p => p.id != -1).foreach(p => {
       pantheons = pantheons + (p.id -> p)
     })
 
@@ -34,7 +34,7 @@ object Universe {
     }
   }
 
-  def allPantheons: Iterable[Pantheon] = pantheons.values
+  def allPantheons: Iterable[Pantheon] = pantheons.values.filter(p => p.id != -1)
 
   def allZones: Iterable[Zone] = zones.values
 

@@ -27,3 +27,5 @@ class Pantheon(tmId: Int, name: String, desc: String) extends Persistent {
 
   def verboseDesc = s"$name - $desc"
 }
+
+object Universal extends Pantheon(-1, "The Universal Pantheon", "The default for all pantheons.")
