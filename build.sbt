@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",            // Encryption library for hashing passwords
   "org.anormcypher" %% "anormcypher" % "0.6.0",   // Library to connect to neo4j
   "ch.qos.logback" % "logback-classic" % "1.1.2",
+  "com.typesafe" % "config" % "1.2.1",
   "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 )
 

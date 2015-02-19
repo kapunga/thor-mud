@@ -3,7 +3,7 @@ package org.kapunga.tm
 import akka.actor.{PoisonPill, Props, Actor}
 import akka.event.Logging
 import org.kapunga.tm.command.CommandExecutorService
-import org.kapunga.tm.soul.{SpiritAgent, Agent, Soul}
+import org.kapunga.tm.soul.{Spirit, SpiritAgent, Agent, Soul}
 
 /**
  * This actor is responsible for handling sanitized input from a player once that player
@@ -17,7 +17,7 @@ class SoulHandler(soul: Soul) extends Actor {
   import context.parent
 
   val log = Logging(context.system, this)
-  val agent: Agent = new SpiritAgent(soul, self)
+  val agent: Agent = new SpiritAgent(soul, Spirit.getSpirit(soul), self)
   agent.spawn()
 
   def receive = {

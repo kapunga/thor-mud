@@ -14,7 +14,7 @@ object ControlCommands extends CommandRegistry {
   val who = Command("who", "list" :: "players" :: Nil, makeHelp("who"), (context, subCommand) => {
     context.executor.tell("Players\n=-=-=-=")
     val agents = AgentManager.getAgents
-    agents.foreach(agent => context.executor.tell(s"${agent.name}"))
+    agents.foreach(agent => context.executor.tell(s"${agent.who}"))
     context.executor.tell(s"====================\nTotal: ${agents.size} players\n")
     context.executor.prompt()
   })

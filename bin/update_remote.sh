@@ -29,6 +29,8 @@ rm ~/ThorMud/lib/ThorMud.jar
 rm -r ~/ThorMud/bootstrap
 EOF
 scp "$THORMUD_HOME"/target/scala-2.11/Thor*-assembly-*.jar $THORMUD_HOST:~/ThorMud/lib/ThorMud.jar
+scp "$THORMUD_HOME"/bin/purge.sh $THORMUD_HOST:~/ThorMud/bin/purge.sh
+scp "$THORMUD_HOME"/bin/bootstrap.sh $THORMUD_HOST:~/ThorMud/bin/bootstrap.sh
 scp -r "$THORMUD_HOME"/bootstrap $THORMUD_HOST:~/ThorMud/
 ssh $THORMUD_HOST << EOF
 ~/ThorMud/bin/thormud start

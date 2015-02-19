@@ -22,6 +22,12 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
   def name = soul.name
 
   /**
+   *
+   * @return A string for the who command.
+   */
+  def who = name
+
+  /**
    * Send a notify message.  This will be passed on to the agent's actor and
    * intern the player playing the agents connection.
    *
@@ -81,4 +87,6 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
  * @param soul The soul of the player this agent
  * @param agentActor The actor handling IO to the player
  */
-case class SpiritAgent(soul: Soul, agentActor: ActorRef) extends Agent(soul, agentActor)
+case class SpiritAgent(soul: Soul, spirit: Spirit, agentActor: ActorRef) extends Agent(soul, agentActor) {
+  override def who = s"[${spirit.spiritLevel().toString}] ${soul.name}"
+}

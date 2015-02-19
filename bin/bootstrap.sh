@@ -39,3 +39,5 @@ do
         fi
     fi
 done
+
+neo4j-shell -c "MATCH (s:Soul), (p:Pantheon) WHERE s.name = '$CREATOR_NAME' AND p.tmId = -1 MERGE (s)-[:Spirit { level : 6 }]->(p) RETURN s, p;"

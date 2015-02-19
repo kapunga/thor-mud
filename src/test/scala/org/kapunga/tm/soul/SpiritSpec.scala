@@ -6,31 +6,31 @@ import org.scalatest.FlatSpec
 
 class SpiritSpec extends FlatSpec {
   "A new Spirit" should "default to Whisper of every key if no default is specified" in {
-    val testSpirit = new Spirit()
+    val testSpirit = new Spirit(testSoul)
 
     assertAllLevelsEqual(testSpirit, Whisper)
   }
 
   it should "return the default level for empty pantheons if a default is specified" in {
-    val testSpirit = new Spirit(Creator)
+    val testSpirit = new Spirit(testSoul, Creator)
 
     assertAllLevelsEqual(testSpirit, Creator)
   }
 
   "A Spirit" should "not allow demotion below Whisper" in {
-    val testSpirit = new Spirit()
+    val testSpirit = new Spirit(testSoul)
 
     assert(!testSpirit.demote())
   }
 
   it should "not allow promotion above Almighty" in {
-    val testSpirit = new Spirit(Almighty)
+    val testSpirit = new Spirit(testSoul, Almighty)
 
     assert(!testSpirit.promote())
   }
 
   it should "raise the level globally if no Pantheon is specified" in {
-    val testSpirit = new Spirit()
+    val testSpirit = new Spirit(testSoul)
 
     testSpirit.promote()
 
@@ -38,7 +38,7 @@ class SpiritSpec extends FlatSpec {
   }
 
   it should "raise only the level for a specific pantheon if specified" in {
-    val testSpirit = new Spirit()
+    val testSpirit = new Spirit(testSoul)
 
     assert(testSpirit.promote(testPantheon(1)))
 
@@ -48,7 +48,7 @@ class SpiritSpec extends FlatSpec {
   }
 
   it should "lower the level globally if no Pantheon is specified" in {
-    val testSpirit = new Spirit(Ghost)
+    val testSpirit = new Spirit(testSoul, Ghost)
 
     assertAllLevelsEqual(testSpirit, Ghost)
 
@@ -58,7 +58,7 @@ class SpiritSpec extends FlatSpec {
   }
 
   it should "lower only the level for a specific pantheon if specified" in {
-    val testSpirit = new Spirit(Ghost)
+    val testSpirit = new Spirit(testSoul, Ghost)
 
     testSpirit.promote(testPantheon(1))
     testSpirit.promote(testPantheon(1))
@@ -75,7 +75,7 @@ class SpiritSpec extends FlatSpec {
   }
 
   it should "not lower the level for a specific level below the default level" in {
-    val testSpirit = new Spirit(Ghost)
+    val testSpirit = new Spirit(testSoul, Ghost)
 
     assert(!testSpirit.demote(testPantheon(1)))
 
@@ -91,4 +91,6 @@ class SpiritSpec extends FlatSpec {
   }
 
   private def testPantheon(id: Int) = new Pantheon(id, "Test pantheon", "Test pantheon")
+
+  private def testSoul = new Soul("Testy", "test@test.com", "deadbeef01")
 }

@@ -38,5 +38,7 @@ object Universe {
 
   def allZones: Iterable[Zone] = zones.values
 
+  def getPantheon(id: Int): Option[Pantheon] = if (pantheons.contains(id)) Some(pantheons(id)) else None
+
   def getZone(id: Int): Zone = if (zones.contains(id)) zones(id) else TheNether
 }
