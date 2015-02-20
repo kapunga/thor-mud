@@ -3,9 +3,10 @@ package org.kapunga.tm.world
 import org.slf4j.LoggerFactory
 
 /**
+ * This Object is responsible for managing the in game cache of top level spatial entities (zones, pantheons, etc.)
+ *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-// TODO: Make zone loading smarter.
 object Universe {
   private val log = LoggerFactory.getLogger("Universe")
   private var pantheons: Map[Int, Pantheon] = Map(Universal.id -> Universal)
