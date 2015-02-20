@@ -81,6 +81,24 @@ object Spirit extends Enumeration {
 
     spirit
   }
+
+  def saveSpiritLevel(soul: Soul, pantheon: Pantheon, level: Spirit.Value) = {
+    val query = Cypher(s"MATCH (s :Soul), (p :Pantheon) WHERE s.name = '${soul.name}' AND p.tmId = ${pantheon.id}"
+                       + s" MERGE (s)-[:Spirit { level : ${level.id} }]->(p);")
+    query.execute()
+  }
+
+  def deleteSpiritLevel(soul: Soul, pantheon: Pantheon) = {
+    val query = Cypher("MATCH (s :Soul)-[l :Spirit]->(p :Pantheon) "
+                       + s"WHERE s.name = '${soul.name}' AND p.tmId = ${pantheon.id} DELETE l;")
+    query.execute()
+  }
+
+  def deleteAllSpiritLevels(soul: Soul) = {
+    val query = Cypher(s"MATCH (s :Soul)-[l :Spirit]->(:Pantheon) WHERE s.name = ${soul.name} DELETE l;")
+
+    query.execute()
+  }
 }
 
 sealed abstract class SpiritPermission
