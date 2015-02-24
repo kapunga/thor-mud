@@ -78,7 +78,7 @@ object CommunicationCommands extends CommandRegistry {
     }
   }, completeSubCommand(() => AgentManager.getAgents.map(agent => agent.name)))
 
-  var commandList = say :: shout :: tell :: Nil
+  val commandList = say :: shout :: tell :: Nil
 
   override def registerCommands(register: Command => Unit) = commandList.foreach(x => register(x))
 }

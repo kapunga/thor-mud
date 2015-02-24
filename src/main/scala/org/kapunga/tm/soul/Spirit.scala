@@ -15,6 +15,7 @@ class Spirit(soul: Soul, defaultLevel: Spirit.Value = Spirit.Whisper) {
         false
       case spirit: Spirit.Value =>
         spiritLevels = spiritLevels + (pantheon.id -> Spirit(spirit.id + 1))
+        saveLevel(pantheon)
         true
     }
   }
@@ -28,6 +29,7 @@ class Spirit(soul: Soul, defaultLevel: Spirit.Value = Spirit.Whisper) {
           false
         } else {
           spiritLevels = spiritLevels + (pantheon.id -> Spirit(spirit.id - 1))
+          saveLevel(pantheon)
           true
         }
     }
@@ -38,11 +40,14 @@ class Spirit(soul: Soul, defaultLevel: Spirit.Value = Spirit.Whisper) {
       false
     } else {
       spiritLevels = spiritLevels + (pantheon.id -> level)
+      saveLevel(pantheon)
       true
     }
   }
 
   def spiritLevel(pantheon: Pantheon = Universal) = spiritLevels(pantheon.id)
+
+  private def saveLevel(pantheon: Pantheon) = Spirit.saveSpiritLevel(soul, pantheon, spiritLevels(pantheon.id))
 }
 
 object Spirit extends Enumeration {

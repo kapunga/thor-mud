@@ -17,7 +17,7 @@ object InteractionCommands extends CommandRegistry {
     context.executor.prompt()
   })
 
-  var commandList = look :: pantheons :: Nil
+  val commandList = look :: pantheons :: Nil
 
   override def registerCommands(register: Command => Unit) = commandList.foreach(x => register(x))
 }

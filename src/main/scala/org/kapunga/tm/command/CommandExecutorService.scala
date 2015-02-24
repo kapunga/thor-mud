@@ -134,6 +134,7 @@ object CommandExecutorService {
  */
 case class CommandPair(command: String, subCommand: String) {
   def hasSubCommand: Boolean = subCommand != null && subCommand != ""
+  def subCommandOption: Option[String] = if (hasSubCommand) Option(subCommand) else None
 }
 
 /**

@@ -1,0 +1,13 @@
+spirit
+------
+usage: spirit { promote | demote } <player-name> <pantheon-name>
+       spirit set <player-name> <spirit-level> <pantheon-name>
+examples: spirit promote Angus Valhalla
+          spirit set Elna DemiGod
+
+Adjusts the spirit level of a given player.  Promote bumps up the player one
+level in the chosen pantheon, demote does the opposite. Set takes a spirit
+level as an argument and sets the player to that.
+
+Specifying a pantheon is optional.  If left off, the global pantheon will be
+assumed.
