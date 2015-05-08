@@ -1,7 +1,7 @@
 package org.kapunga.tm.command
 
 import akka.actor.{ActorRef, Actor}
-import org.kapunga.tm.{EmptyTabComplete, TabCompleteResult}
+import org.kapunga.tm.{EmptyTab, TabResult}
 import org.kapunga.tm.soul.Agent
 import org.kapunga.tm.world.Room
 
@@ -68,7 +68,7 @@ object CommandExecutorService {
    * @param rawCommand The raw string entered by the player.
    * @param context The command context associated with this command request.
    */
-  def command(rawCommand: String, context: CommandContext) = {
+  def command(rawCommand: String, context: ExecContext) = {
     val commandPair = splitCommand(rawCommand)
 
     if (commandPair.command == "") {
@@ -88,14 +88,14 @@ object CommandExecutorService {
    * @param context The command context for the partial command.
    * @return The TabCompleteResult for a tab completion request.
    */
-  def tabComplete(partialCommand: String, context: CommandContext): TabCompleteResult = {
+  def tabComplete(partialCommand: String, context: ExecContext): TabResult = {
     val commandPair = splitCommand(partialCommand)
 
     if(commandPair.hasSubCommand || partialCommand.endsWith(" ")) {
       if (commandMap.contains(commandPair.command)) {
         commandMap(commandPair.command).tabComplete(context, commandPair.subCommand)
       } else {
-        EmptyTabComplete
+        EmptyTab
       }
     } else {
       doComplete(partialCommand, commandMap.keys)
@@ -173,7 +173,7 @@ trait CommandRegistry {
  * @param executor A reference to the agent that is executing the command.
  * @param room The room the agent is currently in.
  */
-case class CommandContext(executor: Agent, room: Room)
+case class ExecContext(executor: Agent, room: Room)
 
 /**
  * Encapsulates a command that a player might enter.
@@ -186,9 +186,9 @@ case class CommandContext(executor: Agent, room: Room)
  *                    in.  It should return a tab completion event for subcommands if possible.  The default is to just
  *                    return an empty TabCompleteResult.
  */
-case class Command(name: String, aliases: List[String], help: Agent => Unit, exec: (CommandContext, String) => Unit,
-                   tabComplete: (CommandContext, String) => TabCompleteResult =
-                   (context, subCommand) => TabCompleteResult("", Nil))
+case class Command(name: String, aliases: List[String], help: Agent => Unit, exec: (ExecContext, String) => Unit,
+                   tabComplete: (ExecContext, String) => TabResult =
+                   (context, subCommand) => TabResult("", Nil))
 
 /**
  * An encapsulation of a valid command input from a player.  This is used as a message to be passed off to
@@ -198,7 +198,7 @@ case class Command(name: String, aliases: List[String], help: Agent => Unit, exe
  * @param context The context corresponding to the an execution of this command.
  * @param subCommand The subCommand that goes along with this command.
  */
-case class ExecutionRequest(command: Command, context: CommandContext, subCommand: String)
+case class ExecutionRequest(command: Command, context: ExecContext, subCommand: String)
 
 /**
  * This object is a holder for a bunch of convenience methods used in the creation of commands.
@@ -259,11 +259,11 @@ object CommandHelpers {
    * @param subCommand A subCommand of a tab completion request.
    * @return The TabCompleteResult for this tab completion request.
    */
-  def completeSubCommand(possible: () => Iterable[String])(context: CommandContext, subCommand: String): TabCompleteResult = {
+  def completeSubCommand(possible: () => Iterable[String])(context: ExecContext, subCommand: String): TabResult = {
     val commandPair = splitCommand(subCommand)
 
     if(commandPair.hasSubCommand || subCommand.endsWith(" ")) {
-      EmptyTabComplete
+      EmptyTab
     } else {
       doComplete(commandPair.command, possible())
     }
@@ -277,17 +277,17 @@ object CommandHelpers {
    * @param possible The list of possible choices we need to match the fragment against.
    * @return A TabCompleteResult for this particular command fragment.
    */
-  def doComplete(commFrag: String, possible: Iterable[String]): TabCompleteResult = {
+  def doComplete(commFrag: String, possible: Iterable[String]): TabResult = {
     val possibleCommands = possible.filter(command => command.indexOf(commFrag) == 0)
 
     possibleCommands.size match {
       case 0 =>
-        EmptyTabComplete
+        EmptyTab
       case 1 =>
-        TabCompleteResult(possibleCommands.toList(0).substring(commFrag.size) + " ", Nil)
+        TabResult(possibleCommands.toList(0).substring(commFrag.size) + " ", Nil)
       case _ =>
         if (possible.exists(p => p == commFrag)) {
-          TabCompleteResult("", possibleCommands.toList)
+          TabResult("", possibleCommands.toList)
         } else {
           val first: String = possibleCommands.toList(0)
 
@@ -299,7 +299,7 @@ object CommandHelpers {
             }
           }
 
-          TabCompleteResult(subSeq.substring(commFrag.size), possibleCommands.toList)
+          TabResult(subSeq.substring(commFrag.size), possibleCommands.toList)
         }
     }
   }

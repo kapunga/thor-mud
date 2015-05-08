@@ -1,6 +1,6 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.EmptyTabComplete
+import org.kapunga.tm.EmptyTab
 import org.kapunga.tm.command.CommandHelpers._
 import org.kapunga.tm.soul.Agent
 import org.kapunga.tm.world.{Universe, WorldDAO}
@@ -64,7 +64,7 @@ object DirectionCommands extends CommandRegistry {
         case WARP_ZONE =>
           doComplete(split.subCommand, Universe.allZones.map(z => z.getName))
         case _ =>
-          EmptyTabComplete
+          EmptyTab
       }
     }
   })

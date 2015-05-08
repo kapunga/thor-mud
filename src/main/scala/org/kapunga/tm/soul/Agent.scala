@@ -2,7 +2,7 @@ package org.kapunga.tm.soul
 
 import akka.actor.ActorRef
 import org.kapunga.tm.{Quit, Prompt, Notify}
-import org.kapunga.tm.command.CommandContext
+import org.kapunga.tm.command.ExecContext
 import org.kapunga.tm.world.Room
 
 /**
@@ -78,7 +78,7 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
    *
    * @return A command context for the agent and it's location.
    */
-  def context = new CommandContext(this, location)
+  def context = new ExecContext(this, location)
 }
 
 /**

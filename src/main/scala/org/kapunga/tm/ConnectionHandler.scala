@@ -94,7 +94,7 @@ class ConnectionHandler(connection: ActorRef) extends Actor {
     case SendCommand(command) =>
       connection ! Write(command)
 
-    case TabCompleteResult(output, options) =>
+    case TabResult(output, options) =>
       inputBuffer = inputBuffer + output
 
       if (options.size > 0) {
@@ -264,12 +264,12 @@ case class TabComplete(input: String)
  * @param output The output as far as we could tab complete.
  * @param options A list of potential matches for whatever has been typed by the player thus far.
  */
-case class TabCompleteResult(output: String, options: List[String])
+case class TabResult(output: String, options: List[String])
 
 /**
  * An empty TabCompleteResult
  */
-object EmptyTabComplete extends TabCompleteResult("", Nil)
+object EmptyTab extends TabResult("", Nil)
 
 /**
  * This message is sent when some part of the system, most likely a ConnectionMonitor needs to send

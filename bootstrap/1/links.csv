@@ -1,0 +1,13 @@
+oId,dir,dId
+0,south,1
+1,north,0
+1,west,2
+2,east,1
+1,east,3
+3,west,1
+1,south,4
+4,north,1
+4,south,5
+5,north,4
+5,east,6
+6,west,5

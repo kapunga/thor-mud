@@ -1,6 +1,6 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.EmptyTabComplete
+import org.kapunga.tm.EmptyTab
 import org.kapunga.tm.soul.AgentManager
 import CommandHelpers._
 
@@ -37,24 +37,10 @@ object ControlCommands extends CommandRegistry {
         context.executor.prompt()
     }
   }, (context, command) => {
-    val split = splitCommand(command)
-    if (split.hasSubCommand) {
-      split.subCommand match {
-        case PROMOTE | DEMOTE =>
-          EmptyTabComplete
-        case SET =>
-          EmptyTabComplete
-        case _ =>
-          EmptyTabComplete
-      }
-    } else {
-      doComplete(split.command, SPIRIT_COMMANDS)
-    }
+    EmptyTab
   })
 
   val commandList = quit :: who :: spirit :: Nil
 
   override def registerCommands(register: Command => Unit) = commandList.foreach(x => register(x))
 }
-
-object SpiritSubCommandMatcher extends StringListMatcher(ControlCommands.SPIRIT_COMMANDS)
