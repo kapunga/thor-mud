@@ -19,6 +19,7 @@ object NewCommandExecutorService extends TabCompleter {
   registerCommand(help)
   NewControlCommands.registerCommands(registerCommand)
   NewCommunicationCommands.registerCommands(registerCommand)
+  NewInteractionCommands.registerCommands(registerCommand)
 
   /**
    * Initializes the CommandExecutor pool.  This should only be done once,
