@@ -126,14 +126,14 @@ class ExecFunction(func: (ExecContext, List[Any]) => Unit) extends ExecTree {
 trait ArgFinder[A] extends TabCompleter {
   def getArg(command: String, context: ExecContext): (Option[A], String)
 
-  def nibble(command: String, context: ExecContext): String
+  def nibble(command: String, context: ExecContext): String = commandSplit(command, options())._2
 }
 
 trait TabCompleter {
-  def options: Traversable[String]
+  def options: () => Iterable[String]
 
   def doComplete(command: String, context: ExecContext): Option[TabResult] = {
-    val optionList = options
+    val optionList = options()
 
     optionList.find(o => (o + " ").equals(command)) match {
       case Some(x) =>

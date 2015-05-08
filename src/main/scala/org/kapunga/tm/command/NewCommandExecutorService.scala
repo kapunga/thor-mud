@@ -18,6 +18,7 @@ object NewCommandExecutorService extends TabCompleter {
 
   registerCommand(help)
   NewControlCommands.registerCommands(registerCommand)
+  NewCommunicationCommands.registerCommands(registerCommand)
 
   /**
    * Initializes the CommandExecutor pool.  This should only be done once,
@@ -65,7 +66,7 @@ object NewCommandExecutorService extends TabCompleter {
    * @return The TabCompleteResult for a tab completion request.
    */
   def tabComplete(partialCommand: String, context: ExecContext): TabResult = {
-    val splits = commandSplit(partialCommand, options)
+    val splits = commandSplit(partialCommand, options())
 
     if (splits._1.length > 0) {
       if (splits._1 == partialCommand)
@@ -82,7 +83,7 @@ object NewCommandExecutorService extends TabCompleter {
     }
   }
 
-  override def options = commandMap.keys
+  override def options = () => commandMap.keys
 
   def helpHelp(agent: Agent) = {
     agent.tell("What would you like help with?")

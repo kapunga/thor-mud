@@ -81,6 +81,10 @@ abstract class Agent(soul: Soul, agentActor: ActorRef) {
   def context = new ExecContext(this, location)
 }
 
+object NullAgent extends Agent(null, null)
+
+object NoSuchAgent extends Agent(null, null)
+
 /**
  * An agent for a player who is currently playing as a spirit.
  *
