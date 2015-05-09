@@ -8,7 +8,7 @@ import org.scalatest.FlatSpec
  */
 class TabCompleterSpec extends FlatSpec {
   class TabCompleterImpl(strings: Iterable[String]) extends TabCompleter {
-    override def options = strings
+    override def options = () => strings
   }
 
   val stringSet = Set("s", "say", "south", "whisper", "who")

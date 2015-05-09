@@ -20,7 +20,7 @@ package object command {
   def commandSplit(comm: String, options: Iterable[String]): (String, String) = {
     val arg = options.filter(s => comm == s || comm.startsWith(s + " ")).fold("")((a, b) => if (a.length > b.length) a else b)
 
-    val remainder = if (comm.length > arg.length) comm.substring(arg.length + 1) else comm.substring(arg.length)
+    val remainder = comm.substring(arg.length)
 
     (arg, remainder.trimLead)
   }
