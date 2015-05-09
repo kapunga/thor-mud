@@ -2,7 +2,7 @@ package org.kapunga.tm
 
 import akka.actor.{Props, ActorSystem}
 import akka.routing.{RoundRobinPool, DefaultResizer}
-import org.kapunga.tm.command.{NewCommandExecutor, NewCommandExecutorService}
+import org.kapunga.tm.command.{CommandExecutor, CommandExecutorService}
 import org.kapunga.tm.world.Universe
 import org.slf4j.LoggerFactory
 
@@ -19,8 +19,8 @@ class ThorMud {
   def start() = {
     log.info("Starting up NewCommandExecutorService...")
     val newPoolResizer = Some(DefaultResizer(lowerBound = 2, upperBound = 15))
-    val newPool = system.actorOf(RoundRobinPool(5, newPoolResizer).props(Props[NewCommandExecutor]), "newCommandRouter")
-    if (NewCommandExecutorService.initExecutorPool(newPool)) {
+    val newPool = system.actorOf(RoundRobinPool(5, newPoolResizer).props(Props[CommandExecutor]), "newCommandRouter")
+    if (CommandExecutorService.initExecutorPool(newPool)) {
       log.info("NewCommandExecutorService started.")
     } else {
       log.error("Unable to start NewCommandExecutorService, shutting down.")

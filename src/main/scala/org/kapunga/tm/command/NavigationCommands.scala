@@ -6,7 +6,7 @@ import org.kapunga.tm.world._
 /**
  * Created by kapunga on 5/8/15.
  */
-object NewNavigationCommands extends NewCommandRegistry{
+object NavigationCommands extends CommandRegistry{
   val WARP_PANTH = "pantheon"
   val WARP_PLAYER = "player"
   val WARP_ZONE = "zone"

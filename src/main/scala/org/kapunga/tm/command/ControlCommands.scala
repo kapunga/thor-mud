@@ -5,7 +5,7 @@ import org.kapunga.tm.soul.AgentManager
 /**
  * Created by kapunga on 5/3/15.
  */
-object NewControlCommands extends NewCommandRegistry {
+object ControlCommands extends CommandRegistry {
   val quit = Root("quit", "exit" :: Nil, makeHelp("quit"), new ExecFunction((context, args) => context.executor.quit()))
 
   val who = Root("who", "list" :: "players" :: Nil, makeHelp("who"), new ExecFunction((context, args) => {

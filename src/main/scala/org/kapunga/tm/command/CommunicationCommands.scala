@@ -8,7 +8,7 @@ import org.kapunga.tm.soul.{NoSuchAgent, NullAgent, Agent, AgentManager}
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-object NewCommunicationCommands extends NewCommandRegistry {
+object CommunicationCommands extends CommandRegistry {
   def doSay(context: ExecContext, args: List[Any]) = {
     import context.executor
 

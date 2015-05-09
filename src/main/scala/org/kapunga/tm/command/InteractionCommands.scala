@@ -8,7 +8,7 @@ import org.kapunga.tm.world.Universe
  *
  * @author Paul J Thordarson kapunga@gmail.com
  */
-object NewInteractionCommands extends NewCommandRegistry {
+object InteractionCommands extends CommandRegistry {
   val look = Root("look", Nil, makeHelp("look"), new ExecFunction((context, subCommand) => context.room.look(context.executor)))
 
   val pantheons = Root("pantheons", Nil, makeHelp("pantheons"), new ExecFunction((context, subCommand) => {

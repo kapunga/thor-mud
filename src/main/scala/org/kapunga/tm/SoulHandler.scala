@@ -2,7 +2,7 @@ package org.kapunga.tm
 
 import akka.actor.{Props, Actor}
 import akka.event.Logging
-import org.kapunga.tm.command.{NewCommandExecutorService}
+import org.kapunga.tm.command.{CommandExecutorService}
 import org.kapunga.tm.soul.{Spirit, SpiritAgent, Agent, Soul}
 
 /**
@@ -27,7 +27,7 @@ class SoulHandler(soul: Soul) extends Actor {
      */
     case Input(content) =>
       log.info(s"Received input: '$content'")
-      NewCommandExecutorService.command(content, agent.context)
+      CommandExecutorService.command(content, agent.context)
     /*
      * This message is received when a quit action is received either as a result of the
      * player's input or something like a reboot or a Kick
@@ -40,7 +40,7 @@ class SoulHandler(soul: Soul) extends Actor {
      * the CommandExecuterService for completion.  Currently unimplemented.
      */
     case TabComplete(partialCommand) =>
-      NewCommandExecutorService.tabComplete(partialCommand, agent.context) match {
+      CommandExecutorService.tabComplete(partialCommand, agent.context) match {
         case EmptyTab =>
           parent ! Output("\n")
           prompt()

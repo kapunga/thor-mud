@@ -12,7 +12,7 @@ import org.kapunga.tm.soul.Agent
  * @author Paul J Thordarson kapunga@gmail.com
  */
 // TODO Make help just list topics available for help.
-object NewCommandExecutorService extends TabCompleter {
+object CommandExecutorService extends TabCompleter {
   var commandMap = Map[String, Root]()
   var executorPool: ActorRef = null
 
@@ -21,10 +21,10 @@ object NewCommandExecutorService extends TabCompleter {
   val help = Root("help", Nil, helpHelp, new Arg(helpArgFinder) +> helpExecFunction)
 
   registerCommand(help)
-  NewControlCommands.registerCommands(registerCommand)
-  NewCommunicationCommands.registerCommands(registerCommand)
-  NewInteractionCommands.registerCommands(registerCommand)
-  NewNavigationCommands.registerCommands(registerCommand)
+  ControlCommands.registerCommands(registerCommand)
+  CommunicationCommands.registerCommands(registerCommand)
+  InteractionCommands.registerCommands(registerCommand)
+  NavigationCommands.registerCommands(registerCommand)
 
   /**
    * Initializes the CommandExecutor pool.  This should only be done once,
@@ -113,7 +113,7 @@ object NewCommandExecutorService extends TabCompleter {
  * method should be implemented that registers all of the commands in the registry with
  * whatever passes it a register argument, generally the CommandExecutorService.
  */
-trait NewCommandRegistry {
+trait CommandRegistry {
   /**
    * Take a closure as an argument that registers each command in this registry with some outside entity.
    *
@@ -127,7 +127,7 @@ trait NewCommandRegistry {
  * output is not blocked in the event that a command takes a while or hangs.  It should only receive ExecutionRequest
  * messages.
  */
-class NewCommandExecutor extends Actor {
+class CommandExecutor extends Actor {
   def receive = {
     case ExecRequest(command, commandContext, subCommand) =>
       command.execute(subCommand, commandContext)
