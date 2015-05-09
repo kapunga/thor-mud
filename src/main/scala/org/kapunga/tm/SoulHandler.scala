@@ -1,8 +1,8 @@
 package org.kapunga.tm
 
-import akka.actor.{PoisonPill, Props, Actor}
+import akka.actor.{Props, Actor}
 import akka.event.Logging
-import org.kapunga.tm.command.{NewCommandExecutorService, CommandExecutorService}
+import org.kapunga.tm.command.{NewCommandExecutorService}
 import org.kapunga.tm.soul.{Spirit, SpiritAgent, Agent, Soul}
 
 /**

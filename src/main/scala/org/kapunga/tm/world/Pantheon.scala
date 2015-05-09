@@ -23,9 +23,15 @@ class Pantheon(tmId: Int, name: String, desc: String) extends Persistent {
     }
   }
 
+  def getName = name
+
   def zone = pZone
 
   def verboseDesc = s"$name - $desc"
 }
 
 object Universal extends Pantheon(-1, "The Universal Pantheon", "The default for all pantheons.")
+
+object NullPantheon extends Pantheon(-2, "NULL", "Program error, you should never see this.")
+
+object NoSuchPantheon extends Pantheon(-2, "NULL", "Program error, you should never see this.")

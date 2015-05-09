@@ -1,13 +1,17 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.{EmptyTab, TabResult}
-import org.kapunga.tm.command.CommandHelpers._
+import org.kapunga.tm.{TabResult}
 import akka.actor.{Actor, ActorRef}
 import org.kapunga.tm.soul.Agent
 
 /**
- * Created by kapunga on 2/25/15.
+ * This object maintains a collection of all available commands as well as a pool of actors responsible
+ * for executing the commands.  This object needs to be initialized in ThorMud with an actor pool otherwise
+ * it will not work.
+ *
+ * @author Paul J Thordarson kapunga@gmail.com
  */
+// TODO Make help just list topics available for help.
 object NewCommandExecutorService extends TabCompleter {
   var commandMap = Map[String, Root]()
   var executorPool: ActorRef = null
@@ -20,6 +24,7 @@ object NewCommandExecutorService extends TabCompleter {
   NewControlCommands.registerCommands(registerCommand)
   NewCommunicationCommands.registerCommands(registerCommand)
   NewInteractionCommands.registerCommands(registerCommand)
+  NewNavigationCommands.registerCommands(registerCommand)
 
   /**
    * Initializes the CommandExecutor pool.  This should only be done once,
@@ -31,6 +36,11 @@ object NewCommandExecutorService extends TabCompleter {
    */
   def initExecutorPool(pool: ActorRef): Boolean = if (executorPool == null) { executorPool = pool ; true } else false
 
+  /**
+   * Register a command so it can be looked up and executed.
+   *
+   * @param command The command we want to register.
+   */
   def registerCommand(command: Root) = {
     if (command.isValid) {
       command.names.foreach(a => commandMap = commandMap + (a -> command))
@@ -43,18 +53,19 @@ object NewCommandExecutorService extends TabCompleter {
    * This method dispatches a command to be executed in the CommandExecutor pool.  It starts by parsing out the
    * primary command and checking whether it is registered before dispatching it to a CommandExecutor.
    *
-   * @param rawCommand The raw string entered by the player.
+   * @param input The raw string entered by the player.
    * @param context The command context associated with this command request.
    */
-  def command(rawCommand: String, context: ExecContext) = {
-    val commandPair = splitCommand(rawCommand)
+  def command(input: String, context: ExecContext) = {
+    val commandPair = commandSplit(input, options())
 
-    if (commandPair.command == "") {
+    if (input.trim == "") {
       context.executor.prompt()
-    } else if (commandMap.contains(commandPair.command)) {
-      executorPool ! ExecRequest(commandMap(commandPair.command), context, commandPair.subCommand.trim())
+    } else if (commandMap.contains(commandPair._1)) {
+      executorPool ! ExecRequest(commandMap(commandPair._1), context, commandPair._2.trim())
     } else {
-      context.executor.tell(s"${commandPair.command} is not an availableCommand.\n")
+      val command = if (input.trimLead.indexOf(" ") == -1) input else input.substring(input.indexOf(" "))
+      context.executor.tell(s"\'$command\' is not an available command.\n")
       helpHelp(context.executor)
     }
   }
@@ -67,20 +78,13 @@ object NewCommandExecutorService extends TabCompleter {
    * @return The TabCompleteResult for a tab completion request.
    */
   def tabComplete(partialCommand: String, context: ExecContext): TabResult = {
-    val splits = commandSplit(partialCommand, options())
+    doComplete(partialCommand, context) match {
+      case None =>
+        val splits = commandSplit(partialCommand, options())
 
-    if (splits._1.length > 0) {
-      if (splits._1 == partialCommand)
-        TabResult(" ", Nil)
-      else
-        commandMap(splits._1).complete(splits._2, context)
-    } else {
-      doComplete(partialCommand, context) match {
-        case None =>
-          EmptyTab
-        case Some(tabResult) =>
-          tabResult
-      }
+        if (splits._1 == partialCommand) TabResult(" ", Nil) else commandMap(splits._1).complete(splits._2, context)
+      case Some(tabResult) =>
+        tabResult
     }
   }
 

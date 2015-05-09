@@ -15,7 +15,6 @@ class Zone(tmId: Int, name: String) extends Persistent {
   private var loaded = false
   protected var spawnPoint: Option[SpawnPoint] = None
 
-
   log.info(s"$name initialized.")
 
   def id = tmId
@@ -70,3 +69,7 @@ object TheNether extends Zone(-1, "The Nether") {
 
   override def load(): Unit = {}
 }
+
+object NullZone extends Zone(-2, "NULL")
+
+object NoSuchZone extends Zone(-3, "NULL")

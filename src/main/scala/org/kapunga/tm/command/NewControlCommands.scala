@@ -1,6 +1,5 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.command.CommandHelpers._
 import org.kapunga.tm.soul.AgentManager
 
 /**
@@ -16,6 +15,28 @@ object NewControlCommands extends NewCommandRegistry {
     context.executor.tell(s"====================\nTotal: ${agents.size} players\n")
     context.executor.prompt()
   }))
+
+  /*
+  val PROMOTE = "promote"
+  val DEMOTE = "demote"
+  val SET = "set"
+  val SPIRIT_COMMANDS = PROMOTE :: DEMOTE :: SET :: Nil
+
+  val spirit = Command("spirit", Nil, makeHelp("spirit"), (context, subCommand) => {
+    import context.executor
+    val split = splitCommand(subCommand)
+    SPIRIT_COMMANDS.find(p => p == split.command) match {
+      case None =>
+        executor.tell("That is not a valid spirit command.")
+        makeHelp("spirit")(executor)
+      case Some(comm) =>
+        context.executor.tell("'spirit' command is unimplemented.")
+        context.executor.prompt()
+    }
+  }, (context, command) => {
+    EmptyTab
+  })
+   */
 
   val commandList = quit :: who :: Nil
 

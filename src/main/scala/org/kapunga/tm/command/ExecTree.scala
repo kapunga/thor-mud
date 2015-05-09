@@ -75,25 +75,31 @@ class Arg[A](af: ArgFinder[A], next: ExecTree = null) extends ExecTree {
   def isValid = if (next == null) false else next.isValid
 }
 
-class Fork(branches: Map[String, ExecTree] = Map()) extends ExecTree {
+class Fork(branches: Map[String, ExecTree] = Map()) extends ExecTree with TabCompleter {
   def complete(command: String, context: ExecContext): TabResult = {
-    val sC = CommandHelpers.splitCommand(command)
-
-    sC.subCommandOption match {
+    doComplete(command, context) match {
+      case Some(tabCompletion) =>
+        tabCompletion
       case None =>
-        CommandHelpers.doComplete(sC.command, branches.keys)
-      case Some(arg) =>
-        if (branches.contains(sC.command)) branches(sC.command).complete(command, context) else EmptyTab
+        val sc = commandSplit(command, options())
+
+        if (sc._1 == "") {
+          EmptyTab
+        } else {
+          branches(sc._1).complete(sc._2.trimLead, context)
+        }
     }
   }
 
-  def execute(command: String, context: ExecContext, args: List[Any] = Nil) = {
-    val sC = CommandHelpers.splitCommand(command)
+  override def options = () => branches.keys
 
-    if (branches.contains(sC.command)) {
-      branches(sC.command).execute(sC.subCommand, context, args)
+  def execute(command: String, context: ExecContext, args: List[Any] = Nil) = {
+    val sC = commandSplit(command, options())
+
+    if (branches.contains(sC._1)) {
+      branches(sC._1).execute(sC._2, context, args)
     } else {
-      context.executor.tell(s"Unknown argument: ${sC.command}")
+      context.executor.tell(s"Unknown argument: ${sC._1}")
     }
   }
 
@@ -142,7 +148,12 @@ trait TabCompleter {
         val possible = optionList.filter(o => o.startsWith(command) || command.trim == "")
 
         if (possible.size == 0) {
-          Some(EmptyTab)
+          completedCommand(command, optionList) match {
+            case Some(result) =>
+              None
+            case None =>
+              Some(EmptyTab)
+          }
         } else if (possible.size == 1) {
           Some(TabResult(possible.toList(0).substring(command.length) + " ", Nil))
         } else {

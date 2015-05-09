@@ -1,10 +1,12 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.command.CommandHelpers._
 import org.kapunga.tm.world.Universe
 
 /**
- * Created by kapunga on 5/8/15.
+ * A command registry for commands that provide basic world interaction, such as
+ * "look" or "take".
+ *
+ * @author Paul J Thordarson kapunga@gmail.com
  */
 object NewInteractionCommands extends NewCommandRegistry {
   val look = Root("look", Nil, makeHelp("look"), new ExecFunction((context, subCommand) => context.room.look(context.executor)))

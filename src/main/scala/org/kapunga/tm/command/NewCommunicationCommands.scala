@@ -1,6 +1,5 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.command.CommandHelpers._
 import org.kapunga.tm.soul.{NoSuchAgent, NullAgent, Agent, AgentManager}
 
 /**
