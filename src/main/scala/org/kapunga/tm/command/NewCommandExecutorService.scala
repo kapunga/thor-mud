@@ -1,6 +1,6 @@
 package org.kapunga.tm.command
 
-import org.kapunga.tm.{TabResult}
+import org.kapunga.tm.TabResult
 import akka.actor.{Actor, ActorRef}
 import org.kapunga.tm.soul.Agent
 

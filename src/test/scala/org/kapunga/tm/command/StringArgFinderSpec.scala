@@ -3,7 +3,7 @@ package org.kapunga.tm.command
 import org.scalatest.FlatSpec
 
 class StringArgFinderSpec extends FlatSpec {
-  val stringSet = Set("s", "say", "south", "whisper", "who")
+  val stringSet = Set("s", "say", "south", "tell", "whisper", "who")
 
   val argFinder = new StringArgFinder(() => stringSet)
 
@@ -23,15 +23,23 @@ class StringArgFinderSpec extends FlatSpec {
     assert(result == (Some(""), "let the dogs out"))
   }
 
-  it should "return the command and no remainder for a match" in {
+  it should "return the command and no remainder for an exact match" in {
+    val result = argFinder.getArg("tell", emptyContext)
 
+    assert(result == (Some("tell"), ""))
   }
 
   it should "return the command and no remainder if the remainder is whitespace" in {
+    val resultA = argFinder.getArg("tell ", emptyContext)
+    val resultB = argFinder.getArg("tell  ", emptyContext)
 
+    assert(resultA == (Some("tell"), ""))
+    assert(resultB == (Some("tell"), ""))
   }
 
-  it should "return the command and the trimmed remainder for a command match" in {
+  it should "return the command and the lead trimmed remainder for a command match" in {
+    val result = argFinder.getArg("tell  Kapunga Whatever! ", emptyContext)
 
+    assert(result == (Some("tell"), "Kapunga Whatever! "))
   }
 }
