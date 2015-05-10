@@ -14,7 +14,7 @@ object NavigationCommands extends CommandRegistry{
   def doWarpPantheon(context: ExecContext, args: List[Any]) = {
     import context.{executor, room}
 
-    val pantheon = if (args.length > 0 && args(0).isInstanceOf[Pantheon]) args(0).asInstanceOf[Pantheon] else null
+    val pantheon = if (args.length > 0 && args.head.isInstanceOf[Pantheon]) args.head.asInstanceOf[Pantheon] else null
 
     if (pantheon == null) throw new IllegalArgumentException // TODO: Maybe log an error here?
 
@@ -33,7 +33,7 @@ object NavigationCommands extends CommandRegistry{
   def doWarpPlayer(context: ExecContext, args: List[Any]) = {
     import context.{executor, room}
 
-    val target = if (args.length > 0 && args(0).isInstanceOf[Agent]) args(0).asInstanceOf[Agent] else null
+    val target = if (args.length > 0 && args.head.isInstanceOf[Agent]) args.head.asInstanceOf[Agent] else null
 
     if (target == null) throw new IllegalArgumentException // TODO: Maybe log an error here?
 
@@ -55,7 +55,7 @@ object NavigationCommands extends CommandRegistry{
   def doWarpZone(context: ExecContext, args: List[Any]) = {
     import context.{executor, room}
 
-    val zone = if (args.length > 0 && args(0).isInstanceOf[Zone]) args(0).asInstanceOf[Zone] else null
+    val zone = if (args.length > 0 && args.head.isInstanceOf[Zone]) args.head.asInstanceOf[Zone] else null
 
     if (zone == null) throw new IllegalArgumentException // TODO: Maybe log an error here?
 
