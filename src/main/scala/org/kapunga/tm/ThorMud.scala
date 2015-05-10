@@ -18,21 +18,23 @@ class ThorMud {
 
   def start() = {
     log.info("Starting up NewCommandExecutorService...")
-    val newPoolResizer = Some(DefaultResizer(lowerBound = 2, upperBound = 15))
-    val newPool = system.actorOf(RoundRobinPool(5, newPoolResizer).props(Props[CommandExecutor]), "newCommandRouter")
-    if (CommandExecutorService.initExecutorPool(newPool)) {
-      log.info("NewCommandExecutorService started.")
+    val cmdPoolResizer = Some(DefaultResizer(lowerBound = 2, upperBound = 15))
+    val cmdPool = system.actorOf(RoundRobinPool(5, cmdPoolResizer).props(Props[CommandExecutor]), "newCommandRouter")
+    if (CommandExecutorService.initExecutorPool(cmdPool)) {
+      log.info("CommandExecutorService started.")
     } else {
-      log.error("Unable to start NewCommandExecutorService, shutting down.")
+      log.error("Unable to start CommandExecutorService, shutting down.")
       system.shutdown()
     }
 
-    log.info("Initializing universe...")
-    Universe.init()
-    log.info("Universe initialized.")
+    if (!system.isTerminated) {
+      log.info("Initializing universe...")
+      Universe.init()
+      log.info("Universe initialized.")
 
-    // Start up the TCP server
-    if (!system.isTerminated) system.actorOf(TcpServer.serverProps(12345), ThorMud.TCP_ACTOR_NAME)
+      // Start up the TCP server
+      system.actorOf(TcpServer.serverProps(12345), ThorMud.TCP_ACTOR_NAME)
+    }
   }
 
   def stop() = {
